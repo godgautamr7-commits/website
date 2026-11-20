@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050505" />
+    <title>Legacy Cloud — Premium Minecraft Server Hosting</title>
+    <meta name="description" content="Legacy Cloud delivers premium Minecraft server hosting on Intel and AMD Ryzen hardware. NVMe storage, DDoS protection, instant setup and human support." />
+    <meta name="keywords" content="Minecraft hosting, Minecraft server hosting, Intel hosting, AMD Ryzen hosting, Infinity servers, game server hosting" />
+    <!-- Apply the saved theme before first paint so there is no flash. Keep ids in sync with src/lib/themes.js -->
+    <script>
+      (function () {
+        var d = document.documentElement;
+        var themes = { 'legacy-dark': 'dark', 'legacy-light': 'light', cyber: 'dark', neu: 'light', bento: 'light', material: 'light', glass: 'dark' };
+        var colors = { 'legacy-dark': '#050505', 'legacy-light': '#fafaf8', cyber: '#08020c', neu: '#f0eff4', bento: '#e2e2e6', material: '#eceefb', glass: '#05060d' };
+        var t = 'legacy-dark', bg = 'animated';
+        try {
+          var app = JSON.parse(localStorage.getItem('swiftcloud_appearance') || '{}');
+          if (app.default_theme && themes[app.default_theme]) t = app.default_theme;
+          if (app.default_bg === 'animated' || app.default_bg === 'texture' || app.default_bg === 'plain') bg = app.default_bg;
+          var st = localStorage.getItem('swiftcloud_theme'); if (st && themes[st]) t = st;
+          var sb = localStorage.getItem('swiftcloud_bg'); if (sb === 'animated' || sb === 'texture' || sb === 'plain') bg = sb;
+        } catch (e) {}
+        d.setAttribute('data-theme', t); d.setAttribute('data-scheme', themes[t]); d.setAttribute('data-bg', bg);
+        var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', colors[t]);
+      })();
+    </script>
+    <link rel="canonical" href="https://legacycloud.gg/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Legacy Cloud" />
+    <meta property="og:title" content="Legacy Cloud — Power Your Gaming World." />
+    <meta property="og:description" content="Premium Minecraft Hosting at Affordable Prices. Intel and AMD Ryzen nodes, NVMe storage, DDoS protection." />
+    <meta property="og:image" content="/images/hero-world.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Oxanium:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Legacy Cloud",
+        "url": "https://legacycloud.gg",
+        "description": "Premium Minecraft server hosting on Intel and AMD Ryzen hardware.",
+        "sameAs": ["https://discord.gg/"]
+      }
+    </script>
+  <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+  <body class="bg-ink-950 text-slate-200 antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

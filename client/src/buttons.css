@@ -1,0 +1,232 @@
+/* ---------------------------------------------------------------------
+   BUTTON SYSTEM — three curved styles, taken from the reference clips.
+
+   .btn-aurora  dark pill, blue light that follows the cursor, dot-grid texture
+   .btn-glass   transparent glass pill with a travelling iridescent rim
+   .btn-soft    soft grey pill that sinks when pressed
+   .btn-icon    circular glass button
+
+   Existing classes are mapped onto them in the Legacy (Black / White) themes:
+     .btn-primary -> aurora      .btn-ghost -> glass      .btn-danger -> soft (rose)
+   Every selector has specificity >= (0,2,1) so it beats the old flat-box rules
+   in themes.css without !important. Nothing here has square corners.
+   --------------------------------------------------------------------- */
+
+@property --rim-a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --glow { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+:root { --bx-blue: 58 78 255; }
+
+/* ---- layout for the stand-alone classes (mapped classes keep their own) ---- */
+:where(.btn-aurora, .btn-glass, .btn-soft, .btn-icon) {
+  /* :where() = zero specificity, so utilities like `hidden`, `lg:hidden`, `w-full`, `!px-4` still win */
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.72rem 1.4rem; border: 0; font-size: 0.875rem; font-weight: 600; line-height: 1.25;
+  white-space: nowrap; text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+:where(.btn-icon) { width: 2.65rem; height: 2.65rem; padding: 0; flex: none; }
+.btn-aurora:disabled, .btn-glass:disabled, .btn-soft:disabled, .btn-icon:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-aurora:focus-visible, .btn-glass:focus-visible, .btn-soft:focus-visible, .btn-icon:focus-visible,
+.bell-pill:focus-visible { outline: 2px solid rgb(var(--violet-400)); outline-offset: 3px; }
+
+/* ---- shared pill shape (all themes for stand-alone, Legacy for mapped) ---- */
+:is(.btn-aurora, .btn-glass, .btn-soft, .btn-icon),
+html[data-theme^='legacy'] :is(.btn, .btn-primary, .btn-ghost, .btn-danger, .lg-btn, .lg-bar) {
+  position: relative; isolation: isolate; overflow: hidden; border-radius: 999px;
+}
+/* icon buttons carry a count badge that sits outside the circle */
+.btn-icon { overflow: visible; }
+html[data-theme^='legacy'] .lg-btn { padding: 0.85rem 1.5rem; }
+html[data-theme^='legacy'] .lg-bar { padding: 1.05rem 1.8rem; }
+
+/* =====================================================================
+   1. AURORA  (btn-primary, btn-aurora, lg-bar)
+   ===================================================================== */
+:is(.btn-aurora, .lg-bar, html[data-theme^='legacy'] .btn-primary) {
+  --mx: 50%; --my: 50%;
+  color: #fff;
+  border: 1px solid rgb(var(--bx-blue) / calc(0.22 + var(--glow) * 0.55));
+  background:
+    radial-gradient(130% 270% at var(--mx) 140%, rgb(var(--bx-blue) / calc(0.2 + var(--glow) * 0.7)) 0%, rgb(var(--bx-blue) / 0) 62%),
+    #04050d;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.03), 0 12px 30px -16px rgb(var(--bx-blue) / 0.85);
+  transition: --glow 0.45s ease, box-shadow 0.35s ease, transform 0.2s ease;
+}
+:is(.btn-aurora, .lg-bar, html[data-theme^='legacy'] .btn-primary)::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+  background-image: radial-gradient(rgb(255 255 255 / 0.75) 0.9px, transparent 1.25px);
+  background-size: 4px 4px;
+  opacity: calc(0.3 + var(--glow) * 0.6);
+  -webkit-mask-image: radial-gradient(70% 170% at var(--mx) 125%, #000 0%, transparent 66%);
+  mask-image: radial-gradient(70% 170% at var(--mx) 125%, #000 0%, transparent 66%);
+}
+:is(.btn-aurora, .lg-bar, html[data-theme^='legacy'] .btn-primary)::after {
+  content: ''; position: absolute; z-index: -1; bottom: 0; left: calc(var(--mx) - 34px);
+  width: 68px; height: 1.5px; border-radius: 2px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(196 208 255 / 0.95), transparent);
+  opacity: calc(0.2 + var(--glow) * 0.8);
+}
+:is(.btn-aurora, .lg-bar, html[data-theme^='legacy'] .btn-primary):hover:not(:disabled) {
+  --glow: 1; color: #fff; transform: translateY(-1px);
+  background:
+    radial-gradient(130% 270% at var(--mx) 140%, rgb(var(--bx-blue) / calc(0.2 + var(--glow) * 0.7)) 0%, rgb(var(--bx-blue) / 0) 62%),
+    #04050d;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 16px 38px -14px rgb(var(--bx-blue) / 0.95);
+}
+:is(.btn-aurora, .lg-bar, html[data-theme^='legacy'] .btn-primary):active:not(:disabled) { transform: translateY(0) scale(0.98); }
+html[data-theme^='legacy'] .lg-bar { margin-top: 2.5rem; }
+html[data-theme^='legacy'] .lg-bar:hover { transform: translateY(-1px); }
+
+/* =====================================================================
+   2. GLASS  (btn-ghost, btn-glass, btn-icon, lg-btn-line)  — transparent
+   ===================================================================== */
+:is(.btn-glass, .btn-icon, .lg-btn-line, .lg-btn-line-light, html[data-theme^='legacy'] .btn-ghost) {
+  color: rgb(var(--fg) / 0.82);
+  border: 0;
+  background: rgb(var(--fg) / 0.035);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: inset 0 1px 0 rgb(var(--fg) / 0.1), 0 10px 26px -16px rgb(0 0 0 / 0.55);
+  transition: background-color 0.3s ease, color 0.25s ease, transform 0.2s ease;
+}
+.lg-btn-line-light { --fg: 255 255 255; }
+:is(.btn-glass, .btn-icon, .lg-btn-line, .lg-btn-line-light, html[data-theme^='legacy'] .btn-ghost)::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--rim-a),
+    rgb(var(--fg) / 0.2) 0%, rgb(var(--fg) / 0.2) 36%, rgb(var(--fg) / 0.95) 49%,
+    #ffcf99 55%, #8fb8ff 61%, #d79bff 66%, rgb(var(--fg) / 0.2) 77%, rgb(var(--fg) / 0.2) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: bx-rim 6s linear infinite;
+}
+:is(.btn-glass, .btn-icon, .lg-btn-line, .lg-btn-line-light, html[data-theme^='legacy'] .btn-ghost):hover:not(:disabled) {
+  color: rgb(var(--fg)); background: rgb(var(--fg) / 0.09); border: 0; transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgb(var(--fg) / 0.16), 0 14px 30px -16px rgb(0 0 0 / 0.6);
+}
+:is(.btn-glass, .btn-icon, .lg-btn-line, .lg-btn-line-light, html[data-theme^='legacy'] .btn-ghost):hover:not(:disabled)::before { animation-duration: 2.4s; }
+:is(.btn-glass, .btn-icon, .lg-btn-line, .lg-btn-line-light, html[data-theme^='legacy'] .btn-ghost):active:not(:disabled) { transform: scale(0.97); }
+@keyframes bx-rim { to { --rim-a: 360deg; } }
+
+/* =====================================================================
+   3. SOFT  (btn-soft, btn-danger, lg-btn-solid-light, carousel arrows)
+   ===================================================================== */
+:is(.btn-soft, .lg-btn-solid-light, .lg-arrow) {
+  color: #0b0b0b; border: 0;
+  background: linear-gradient(180deg, #f1f1f1, #d8d8d8);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(0 0 0 / 0.12), 0 10px 20px -12px rgb(0 0 0 / 0.6);
+  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.2s ease;
+}
+html[data-scheme='light'] :is(.btn-soft, .lg-arrow) { background: linear-gradient(180deg, #e6e6e3, #cfcfcb); }
+html[data-theme^='legacy'] .btn-danger {
+  color: #7a1020; border: 0;
+  background: linear-gradient(180deg, #ffe6e9, #ffc4cb);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(122 16 32 / 0.14), 0 10px 20px -12px rgb(190 30 60 / 0.6);
+  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.2s ease;
+}
+:is(.btn-soft, .lg-btn-solid-light, .lg-arrow, html[data-theme^='legacy'] .btn-danger):hover:not(:disabled) {
+  filter: brightness(0.97); color: inherit; border: 0;
+}
+html[data-theme^='legacy'] .btn-danger:hover:not(:disabled) { color: #7a1020; background: linear-gradient(180deg, #ffe6e9, #ffc4cb); box-shadow: inset 0 1px 0 #fff, 0 12px 22px -12px rgb(190 30 60 / 0.7); }
+html :is(.btn-soft, .lg-btn-solid-light):hover:not(:disabled) { color: #0b0b0b; background: linear-gradient(180deg, #f1f1f1, #d8d8d8); }
+:is(.btn-soft, .lg-btn-solid-light, .lg-arrow, html[data-theme^='legacy'] .btn-danger):active:not(:disabled) {
+  transform: translateY(1px) scale(0.965);
+  box-shadow: inset 0 3px 9px rgb(0 0 0 / 0.28);
+}
+html[data-theme^='legacy'] .lg-arrow:hover { transform: scale(1.06); }
+html[data-theme^='legacy'] .lg-arrow:active { transform: translateY(1px) scale(0.94); }
+
+/* =====================================================================
+   Other controls that used to be boxes
+   ===================================================================== */
+/* Black / White switch -> transparent glass capsule */
+html .mode-toggle {
+  padding: 3px; gap: 2px; border: 0; border-radius: 999px; background: rgb(var(--fg) / 0.04);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 0 1px rgb(var(--fg) / 0.22);
+}
+html .mode-toggle span { padding: 0.45rem 0.8rem; border-radius: 999px; }
+
+/* "Survival" world label that follows the cursor in the hero */
+html .lg-tip {
+  border-radius: 999px; padding: 0.3rem 1rem 0.3rem 0.3rem;
+  background: rgb(255 255 255 / 0.9); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.6);
+}
+html .lg-tip img { border-radius: 999px; width: 40px; height: 34px; }
+
+html .lg-panel-close { border-radius: 50%; }
+html .lg-panel { border-radius: 28px; }
+html .lg-panel-view button { border-radius: 999px; padding: 0.25rem 0.7rem; }
+
+/* =====================================================================
+   Notification bell (soft pill + number badge)
+   ===================================================================== */
+.bell-pill {
+  position: relative; display: grid; place-items: center; height: 2.65rem; min-width: 3.2rem; padding: 0 1rem;
+  border: 0; border-radius: 999px; cursor: pointer; color: #0b0b0b;
+  background: linear-gradient(180deg, #f1f1f1, #d8d8d8);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgb(0 0 0 / 0.12), 0 10px 20px -12px rgb(0 0 0 / 0.6);
+  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.2s ease;
+}
+html[data-scheme='light'] .bell-pill { background: linear-gradient(180deg, #e6e6e3, #cfcfcb); }
+.bell-pill:hover { filter: brightness(0.97); }
+.bell-pill:active { transform: translateY(1px) scale(0.96); box-shadow: inset 0 3px 9px rgb(0 0 0 / 0.28); }
+.bell-badge {
+  position: absolute; top: -0.5rem; right: -0.4rem; display: grid; place-items: center;
+  min-width: 1.4rem; height: 1.4rem; padding: 0 0.4rem; border-radius: 999px;
+  background: #ececec; color: #0b0b0b; font-size: 0.72rem; font-weight: 600; line-height: 1;
+  box-shadow: 0 0 0 3px rgb(var(--ink-950));
+}
+.bell-badge[data-wide='true'] { padding: 0 0.5rem; }
+.bell-panel {
+  position: absolute; right: 0; top: calc(100% + 0.7rem); z-index: 70; width: min(88vw, 21rem);
+  padding: 0.9rem; border-radius: 1.5rem; color: rgb(var(--fg));
+  background: rgb(var(--ink-900) / 0.55);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+  box-shadow: inset 0 0 0 1px rgb(var(--fg) / 0.14), 0 24px 60px -24px rgb(0 0 0 / 0.7);
+  animation: bx-pop 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.bell-panel-head { margin: 0.1rem 0.5rem 0.6rem; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(var(--slate-500)); }
+.bell-panel ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.4rem; max-height: 18rem; overflow-y: auto; }
+.bell-panel li { display: grid; gap: 0.15rem; padding: 0.7rem 0.85rem; border-radius: 1rem; background: rgb(var(--fg) / 0.05); font-size: 0.8rem; line-height: 1.4; }
+.bell-panel li b { font-weight: 600; }
+.bell-panel li span { color: rgb(var(--slate-400)); }
+.bell-empty { margin: 0.4rem 0.5rem 0.6rem; font-size: 0.82rem; color: rgb(var(--slate-400)); }
+@keyframes bx-pop { from { opacity: 0; transform: translateY(-6px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+/* =====================================================================
+   Transparent auth card (Register uses it; Login uses sign-in-card-2)
+   ===================================================================== */
+html .auth-glass {
+  border-radius: 1.75rem; background: rgb(var(--fg) / 0.04); color: rgb(var(--fg));
+  box-shadow: inset 0 0 0 1px rgb(var(--fg) / 0.12), 0 30px 70px -34px rgb(0 0 0 / 0.7);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3); backdrop-filter: blur(20px) saturate(1.3);
+}
+html .auth-glass .input { border-radius: 999px; background: rgb(var(--fg) / 0.05); border-color: transparent; padding-left: 1.1rem; padding-right: 1.1rem; }
+html .auth-glass .input:focus { border-color: rgb(var(--fg) / 0.25); background: rgb(var(--fg) / 0.09); outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.btn-glass, .btn-icon, .lg-btn-line, .lg-btn-line-light, html[data-theme^='legacy'] .btn-ghost)::before,
+  .bell-panel { animation: none !important; }
+}
+
+/* liquid navbar labels must never wrap */
+.nimbus-item { white-space: nowrap; }
+
+/* White theme: frosted-white water pill with dark labels (readable on the white page and on the dark hero) */
+html[data-scheme='light'] .nimbus-nav[data-tone='dark'] {
+  --n-tint: rgba(255, 255, 255, 0.6); --n-fg: #0b132b; --n-fg-soft: rgba(11, 19, 43, 0.62); --n-rim: rgba(255, 255, 255, 0.9);
+}
+
+/* phones: keep logo, switch, bell, cart and menu on one line */
+@media (max-width: 639px) {
+  header .container-x { gap: 0.5rem; }
+  html[data-theme^='legacy'] header .logo-word { letter-spacing: 0.1em; font-size: 0.64rem; }
+  html .mode-toggle span { padding: 0.3rem 0.4rem; font-size: 0.52rem; letter-spacing: 0.04em; }
+  header .container-x { padding-left: 1rem; padding-right: 1rem; }
+  header .btn-icon, header .bell-pill { width: 2.2rem; height: 2.2rem; min-width: 2.2rem; }
+  header .btn-icon, header .bell-pill { width: 2.4rem; height: 2.4rem; min-width: 2.4rem; padding: 0; }
+  header .container-x > div:last-child { gap: 0.4rem; }
+}
